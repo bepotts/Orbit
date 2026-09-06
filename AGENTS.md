@@ -123,7 +123,7 @@ If SwiftData is configured to use CloudKit:
 - Keep views mostly declarative: read from `engine`, bind simple editable values, and call engine methods.
 - If adding timer states or controls, update `MacTimerView`, `IOSTimerView`, and `MenuBarContentView` unless the behavior is intentionally scene-specific.
 - Keep state mutations for `TimerEngine` on the main actor.
-- Keep variable declarations for UI elements at the bottom of the scope so the main view flow stays easy to scan.
+- Keep stored property declarations for UI elements at the top of the type's scope, before `body` and methods. This includes constants and properties using wrappers such as `@State`, `@Binding`, `@Environment`, and `@FocusState`.
 - Add comments for every declared variable, function, and enum, including UI properties, helper methods, enum types, and enum cases. Use Swift doc comments (`///`) for functions and enums. Start each function docstring with a short summary sentence, then add a blank doc-comment line before any structured details. For functions with parameters, include a `- Parameters:` section with one indented bullet per parameter that explains its role. For functions that return a value, include a `- Returns:` section that describes what comes back. Omit sections that do not apply.
 - Avoid broad refactors unless they directly support the requested change.
 

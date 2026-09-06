@@ -17,6 +17,11 @@ enum UITestApp {
         app.launchArguments.append(contentsOf: ["-ApplePersistenceIgnoreState", "YES"])
         app.launch()
         app.activate()
+        // Continue through the placeholder login before exercising timer behavior.
+        let continueButton = app.buttons["continueWithoutSignInButton"]
+        if continueButton.waitForExistence(timeout: 5) {
+            continueButton.tap()
+        }
         return app
     }
 

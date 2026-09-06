@@ -22,7 +22,7 @@ struct TimeOnTaskApp: App {
     var body: some Scene {
         #if os(macOS)
             WindowGroup {
-                MacTimerView()
+                AppRootView()
                     .environment(engine)
             }
             .windowResizability(.contentSize)
@@ -38,7 +38,7 @@ struct TimeOnTaskApp: App {
             .menuBarExtraStyle(.window)
         #else
             WindowGroup {
-                IOSTimerView()
+                AppRootView()
                     .environment(engine)
             }
         #endif
