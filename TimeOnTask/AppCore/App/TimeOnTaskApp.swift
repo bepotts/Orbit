@@ -10,6 +10,11 @@ import SwiftUI
 /// Main entry point for the TimeOnTask app.
 @main
 struct TimeOnTaskApp: App {
+    /// Initializes the shared backend client when the app starts.
+    init() {
+        _ = SupabaseService.client
+    }
+
     /// Shared timer state that is injected into both the main window and menu bar UI.
     @State private var engine = TimerEngine()
 
