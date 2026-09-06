@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A10600000000000000000001 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = A10600000000000000000002 /* Supabase */; };
 		29E71A77303FAD9B00E428D3 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 29E71A76303FAD9B00E428D3 /* .gitignore */; };
 		29E71C2A3045B11C00E428D3 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 29E71C293045B11C00E428D3 /* README.md */; };
 		29E71C2B3045B11C00E428D3 /* AGENTS.md in Resources */ = {isa = PBXBuildFile; fileRef = 29E71C273045B11C00E428D3 /* AGENTS.md */; };
 		29E71C2C3045B11C00E428D3 /* CLAUDE.md in Resources */ = {isa = PBXBuildFile; fileRef = 29E71C283045B11C00E428D3 /* CLAUDE.md */; };
 		29E71C913046D7D400E428D3 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 29E71C903046D7D400E428D3 /* .swiftlint.yml */; };
 		29E71C923046D7D400E428D3 /* .swiftformat in Resources */ = {isa = PBXBuildFile; fileRef = 29E71C8F3046D7D400E428D3 /* .swiftformat */; };
+		A10600000000000000000001 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = A10600000000000000000002 /* Supabase */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -446,8 +446,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = CM675CHYNF;
 				ENABLE_APP_SANDBOX = YES;
-				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -494,8 +494,8 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = CM675CHYNF;
 				ENABLE_APP_SANDBOX = YES;
-				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -693,6 +693,7 @@
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		A10600000000000000000002 /* Supabase */ = {
 			isa = XCSwiftPackageProductDependency;
