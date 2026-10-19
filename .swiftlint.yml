@@ -1,13 +1,13 @@
 included:
-  - TimeOnTask
-  - TimeOnTaskTests
-  - TimeOnTaskUITests
+  - Orbit
+  - OrbitTests
+  - OrbitUITests
 
 excluded:
   - .build
   - DerivedData
-  - TimeOnTask.xcodeproj
-  - TimeOnTask.xcworkspace
+  - Orbit.xcodeproj
+  - Orbit.xcworkspace
 
 analyzer_rules:
   - unused_import

@@ -19,6 +19,12 @@ TestReports/
 *.xccheckout
 *.xcscmblueprint
 
+# ============================================
+# API Keys and Secrets
+# ============================================
+
+Config/development.xcconfig
+Config/production.xcconfig
 
 # ============================================
 # Swift Package Manager

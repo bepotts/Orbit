@@ -1,0 +1,14 @@
+//
+//  development.example.xcconfig
+//  Orbit
+//
+//  Created by Brandon Potts on 9/6/26.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://developer.apple.com/documentation/xcode/adding-a-build-configuration-file-to-your-project
+
+// Supabase Credentials
+// Use /$()/ to prevent xcconfig from treating // as a comment.
+SUPABASE_PROJECT_URL = https:/$()/YOUR_PROJECT.supabase.co
+SUPABASE_PUBLISHABLE_KEY = sb_publishable_YOUR_KEY
