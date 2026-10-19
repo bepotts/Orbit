@@ -1,5 +1,5 @@
-PROJECT ?= TimeOnTask.xcodeproj
-SCHEME ?= TimeOnTask
+PROJECT ?= Orbit.xcodeproj
+SCHEME ?= Orbit
 CONFIGURATION ?= Debug
 SWIFTLINT ?= swiftlint
 SWIFTFORMAT ?= swiftformat
@@ -47,10 +47,10 @@ clean:
 	xcodebuild -project "$(PROJECT)" -scheme "$(SCHEME)" -configuration "$(CONFIGURATION)" clean
 
 test-unit:
-	$(call RUN_AND_LOG,xcodebuild -project "$(PROJECT)" -scheme "$(SCHEME)" test -only-testing:TimeOnTaskTests)
+	$(call RUN_AND_LOG,xcodebuild -project "$(PROJECT)" -scheme "$(SCHEME)" test -only-testing:OrbitTests)
 
 test-ui:
-	$(call RUN_AND_LOG,xcodebuild -project "$(PROJECT)" -scheme "$(SCHEME)" test -only-testing:TimeOnTaskUITests)
+	$(call RUN_AND_LOG,xcodebuild -project "$(PROJECT)" -scheme "$(SCHEME)" test -only-testing:OrbitUITests)
 
 test:
 	$(call RUN_AND_LOG,xcodebuild -project "$(PROJECT)" -scheme "$(SCHEME)" test)

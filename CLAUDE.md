@@ -4,48 +4,48 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-TimeOnTask ("Ember") is a native SwiftUI focus timer for macOS, iPadOS, and iOS. The macOS app has a main window plus a `MenuBarExtra` popover, while the iPadOS and iOS app has a single timer view. All surfaces are driven by one shared timer engine.
+Orbit ("Orbit") is a native SwiftUI focus timer for macOS, iPadOS, and iOS. The macOS app has a main window plus a `MenuBarExtra` popover, while the iPadOS and iOS app has a single timer view. All surfaces are driven by one shared timer engine.
 
 ## Commands
 
-Build and test via `xcodebuild` (scheme: `TimeOnTask`):
+Build and test via `xcodebuild` (scheme: `Orbit`):
 
 ```bash
-xcodebuild -scheme TimeOnTask -project TimeOnTask.xcodeproj build
+xcodebuild -scheme Orbit -project Orbit.xcodeproj build
 ```
 
 ```bash
-xcodebuild -scheme TimeOnTask -project TimeOnTask.xcodeproj test
+xcodebuild -scheme Orbit -project Orbit.xcodeproj test
 ```
 
-Run a single test (Swift Testing framework, used by `TimeOnTaskTests`):
+Run a single test (Swift Testing framework, used by `OrbitTests`):
 
 ```bash
-xcodebuild -scheme TimeOnTask -project TimeOnTask.xcodeproj test -only-testing:TimeOnTaskTests/TimeOnTaskTests/presetChangesRemainingWhileIdle
+xcodebuild -scheme Orbit -project Orbit.xcodeproj test -only-testing:OrbitTests/OrbitTests/presetChangesRemainingWhileIdle
 ```
 
 Run just the UI tests target (XCTest):
 
 ```bash
-xcodebuild -scheme TimeOnTask -project TimeOnTask.xcodeproj test -only-testing:TimeOnTaskUITests
+xcodebuild -scheme Orbit -project Orbit.xcodeproj test -only-testing:OrbitUITests
 ```
 
-There is no SPM `Package.swift` or separate lint config — this is a plain Xcode project (`TimeOnTask.xcodeproj`).
+There is no SPM `Package.swift` or separate lint config — this is a plain Xcode project (`Orbit.xcodeproj`).
 
 ## Architecture
 
-**Single source of truth:** `TimerEngine` (`TimeOnTask/AppCore/Core/TimerEngine.swift`) is the one `@MainActor` `ObservableObject` created in `TimeOnTaskApp` and injected via `.environmentObject` into platform-specific scenes. There is no per-view state duplication: the macOS main window, macOS menu bar popover, and iPadOS/iOS app screen are renderings of the same engine.
+**Single source of truth:** `TimerEngine` (`Orbit/AppCore/Core/TimerEngine.swift`) is the one `@MainActor` `ObservableObject` created in `OrbitApp` and injected via `.environmentObject` into platform-specific scenes. There is no per-view state duplication: the macOS main window, macOS menu bar popover, and iPadOS/iOS app screen are renderings of the same engine.
 
-- **Source layout**: `TimeOnTask/AppCore` contains shared app, engine, service, design-system, and reusable view code. `TimeOnTask/Mac` contains macOS-specific views. `TimeOnTask/iPadOS-iOS` contains iPhone and iPad-specific views.
-- **UI test layout**: `TimeOnTaskUITests/AppCore` contains shared UI test helpers. `TimeOnTaskUITests/Mac` contains macOS-specific UI tests. `TimeOnTaskUITests/iPadOS-iOS` contains iPhone and iPad-specific UI tests.
+- **Source layout**: `Orbit/AppCore` contains shared app, engine, service, design-system, and reusable view code. `Orbit/Mac` contains macOS-specific views. `Orbit/iPadOS-iOS` contains iPhone and iPad-specific views.
+- **UI test layout**: `OrbitUITests/AppCore` contains shared UI test helpers. `OrbitUITests/Mac` contains macOS-specific UI tests. `OrbitUITests/iPadOS-iOS` contains iPhone and iPad-specific UI tests.
 - **Phase state machine**: `TimerPhase` is `.idle → .running ⇄ .paused → .complete → .idle`. All views branch on `engine.phase` to decide which controls to show (see the `controls` computed views in `MacTimerView`, `IOSTimerView`, and `MenuBarContentView`, which are structurally duplicated between the app surfaces).
 - **Wall-clock timing, not tick-counting**: running state is tracked via an `endDate` (`Date`), and a 0.25s repeating `Timer` just recomputes `remaining = endDate.timeIntervalSinceNow`. This means pause/resume and elapsed time stay correct across sleep/backgrounding without drift accumulation from tick counting.
 - **Views are dumb**: `TimerDialView` (the circular progress ring), `MacTimerView`, `IOSTimerView`, and `MenuBarContentView`/`MenuBarLabel` only read `engine` and call its methods (`start`, `pause`, `stop`, `selectPreset`, `startAnother`); no view owns timer logic itself.
-- **Side effects live in `NotificationManager`** (`TimeOnTask/AppCore/Services/NotificationManager.swift`), a plain singleton (not an `ObservableObject`) that `TimerEngine.complete()` calls directly to fire a `UNUserNotificationCenter` alert and play a system sound where supported.
-- **Styling is centralized** in `TimeOnTask/AppCore/DesignSystem/EmberStyle.swift`: the `EmberColor` gradient and three `ButtonStyle`s (`EmberRoundButtonStyle`, `EmberPillButtonStyle`, `EmberTextButtonStyle`) used everywhere instead of ad hoc modifiers, plus a `Color(hex:)` initializer.
+- **Side effects live in `NotificationManager`** (`Orbit/AppCore/Services/NotificationManager.swift`), a plain singleton (not an `ObservableObject`) that `TimerEngine.complete()` calls directly to fire a `UNUserNotificationCenter` alert and play a system sound where supported.
+- **Styling is centralized** in `Orbit/AppCore/DesignSystem/EmberStyle.swift`: the `EmberColor` gradient and three `ButtonStyle`s (`EmberRoundButtonStyle`, `EmberPillButtonStyle`, `EmberTextButtonStyle`) used everywhere instead of ad hoc modifiers, plus a `Color(hex:)` initializer.
 - **Previews as fixtures**: `TimerEngine` has `completedPreview()`/`runningPreview()` helpers used by SwiftUI `#Preview` blocks to exercise non-idle states without going through real timing/notifications — reuse this pattern rather than hand-rolling preview state.
 
-Note: `TimeOnTaskTests.swift` currently expects `TimerEngine.defaultDuration` to be `.minutes(30)` with presets `[15, 30, 45, 60]`.
+Note: `OrbitTests.swift` currently expects `TimerEngine.defaultDuration` to be `.minutes(30)` with presets `[15, 30, 45, 60]`.
 
 ## Implementation Notes
 

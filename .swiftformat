@@ -15,5 +15,5 @@
 
 --exclude .build
 --exclude DerivedData
---exclude TimeOnTask.xcodeproj
---exclude TimeOnTask.xcworkspace
+--exclude Orbit.xcodeproj
+--exclude Orbit.xcworkspace
