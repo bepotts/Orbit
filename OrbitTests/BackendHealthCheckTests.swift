@@ -7,7 +7,7 @@ import Testing
 @MainActor
 struct BackendHealthCheckTests {
     /// Verifies both network and HTTP failures retry, then stop on success.
-    @Test func retriesUntilOnline() async throws {
+    @Test func `retries until online`() async throws {
         let url = try #require(URL(string: "https://\(Faker().internet.domainName())"))
         var attempts = 0
         var delays = 0
@@ -15,10 +15,12 @@ struct BackendHealthCheckTests {
             #expect(request.url == url.appending(path: "health"))
             #expect(request.httpMethod == "GET")
             attempts += 1
-            if attempts == 1 { throw URLError(.cannotConnectToHost) }
+            if attempts == 1 {
+                throw URLError(.cannotConnectToHost)
+            }
             let response = try #require(HTTPURLResponse(
                 url: url, statusCode: attempts == 2 ? 503 : 200,
-                httpVersion: nil, headerFields: nil
+                httpVersion: nil, headerFields: nil,
             ))
             return (Data(), response)
         }
@@ -29,7 +31,7 @@ struct BackendHealthCheckTests {
     }
 
     /// Verifies cancellation during the retry delay stops further requests.
-    @Test func stopsWhenDelayIsCancelled() async throws {
+    @Test func `stops when delay is cancelled`() async throws {
         let url = try #require(URL(string: "https://\(Faker().internet.domainName())"))
         var attempts = 0
         let client = try BackendClient(baseURL: url) { _ in

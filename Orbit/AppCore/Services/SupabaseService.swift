@@ -26,8 +26,8 @@ enum SupabaseService {
             supabaseKey: publishableKey,
             options: SupabaseClientOptions(
                 // Initial sessions can be expired; check isExpired before using them for signed-in UI.
-                auth: .init(emitLocalSessionAsInitialSession: true)
-            )
+                auth: .init(emitLocalSessionAsInitialSession: true),
+            ),
         )
     }()
 }

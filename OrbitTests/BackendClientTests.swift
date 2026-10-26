@@ -7,7 +7,7 @@ import Testing
 @MainActor
 struct BackendClientTests {
     /// Verifies JSON and authorization reach the intended backend path.
-    @Test func sendsJSONWithBearerToken() async throws {
+    @Test func `sends JSON with bearer token`() async throws {
         let faker = Faker()
         let url = try #require(URL(string: "https://\(faker.internet.domainName())/backend"))
         let path = "api/v1/\(faker.lorem.word())"
@@ -24,13 +24,13 @@ struct BackendClientTests {
             return (body, response)
         }
         let result = try await client.request(
-            path: path, method: "POST", body: body, accessToken: accessToken
+            path: path, method: "POST", body: body, accessToken: accessToken,
         )
         #expect(result == body)
     }
 
     /// Verifies failed HTTP responses retain their status and validation details.
-    @Test func preservesHTTPFailure() async throws {
+    @Test func `preserves HTTP failure`() async throws {
         let url = try #require(URL(string: "https://\(Faker().internet.domainName())"))
         let body = try JSONEncoder().encode(["detail": Faker().lorem.sentence()])
         let client = try BackendClient(baseURL: url) { _ in
@@ -47,7 +47,7 @@ struct BackendClientTests {
     /// - Parameters:
     ///   - value: Unsupported or ambiguous backend URL to reject.
     @Test(arguments: ["file:///tmp/backend", "https://example.com?query=value", "https://user:password@example.com"])
-    func rejectsInvalidBaseURL(value: String) throws {
+    func `rejects invalid base URL`(value: String) throws {
         let url = try #require(URL(string: value))
         #expect(throws: BackendError.invalidBaseURL) {
             try BackendClient(baseURL: url) { _ in
@@ -58,7 +58,7 @@ struct BackendClientTests {
     }
 
     /// Verifies empty successful responses work for DELETE and other no-content endpoints.
-    @Test func acceptsNoContent() async throws {
+    @Test func `accepts no content`() async throws {
         let url = try #require(URL(string: "https://\(Faker().internet.domainName())"))
         let client = try BackendClient(baseURL: url) { request in
             #expect(request.value(forHTTPHeaderField: "Authorization") == nil)
@@ -75,7 +75,7 @@ struct BackendClientTests {
     /// - Parameters:
     ///   - code: URL loading error that the transport should propagate.
     @Test(arguments: [URLError.Code.cancelled, .notConnectedToInternet, .timedOut])
-    func propagatesTransportErrors(code: URLError.Code) async throws {
+    func `propagates transport errors`(code: URLError.Code) async throws {
         let url = try #require(URL(string: "https://\(Faker().internet.domainName())"))
         let client = try BackendClient(baseURL: url) { _ in
             throw URLError(code)

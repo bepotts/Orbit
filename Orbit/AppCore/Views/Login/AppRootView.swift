@@ -4,34 +4,59 @@ import SwiftUI
 struct AppRootView: View {
     /// Whether this window has finished its initial welcome screen.
     @State private var hasFinishedLanding = false
-    /// Whether this window has continued past the placeholder login page.
+    /// Whether this window has continued past the login page.
     @State private var showsTimer = false
+
+    /// Triggers logout in a task owned by this root view.
+    @State private var requestsSignOut = false
+
+    /// Authentication state retained when the timer is presented.
+    @State private var loginModel = LoginModel()
 
     /// The welcome screen, login page, or platform's existing timer surface.
     var body: some View {
         Group {
             if !hasFinishedLanding {
                 LandingPageView()
-                    #if os(macOS)
+                #if os(macOS)
                     .frame(width: 360, height: 520)
-                    #endif
+                #endif
                     .task {
                         await finishLanding()
                     }
             } else if showsTimer {
-                #if os(macOS)
-                MacTimerView()
-                #else
-                IOSTimerView()
-                #endif
-            } else {
-                LoginView {
-                    showsTimer = true
+                Group {
+                    #if os(macOS)
+                        MacTimerView()
+                    #else
+                        IOSTimerView()
+                    #endif
                 }
+                .safeAreaInset(edge: .top) {
+                    HStack {
+                        Spacer()
+                        Button(loginModel.session == nil ? "Back to Sign In" : "Log Out") {
+                            requestsSignOut = true
+                        }
+                        .accessibilityIdentifier("logoutButton")
+                        .disabled(requestsSignOut)
+                    }
+                    .padding()
+                }
+            } else {
+                LoginView(onContinue: {
+                    showsTimer = true
+                }, model: loginModel)
                 #if os(macOS)
-                .frame(width: 360, height: 520)
+                    .frame(width: 360, height: 520)
                 #endif
             }
+        }
+        .task(id: requestsSignOut) {
+            guard requestsSignOut else { return }
+            showsTimer = false
+            await loginModel.signOut()
+            requestsSignOut = false
         }
     }
 

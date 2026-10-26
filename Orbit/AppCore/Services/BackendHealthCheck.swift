@@ -18,7 +18,10 @@ struct BackendHealthCheck {
                 return
             } catch {
                 guard !Task.isCancelled, !(error is CancellationError) else { return }
-                Logger.services.error("Backend is unavailable: \(error.localizedDescription, privacy: .public). Retrying in five seconds.")
+                Logger.services
+                    .error(
+                        "Backend is unavailable: \(error.localizedDescription, privacy: .public). Retrying in five seconds.",
+                    )
             }
 
             do {

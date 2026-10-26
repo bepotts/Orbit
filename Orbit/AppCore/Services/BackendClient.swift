@@ -33,7 +33,7 @@ struct BackendClient {
     /// - Throws: BackendError.invalidBaseURL for unsupported or ambiguous endpoints.
     init(
         baseURL: URL,
-        transport: @escaping (URLRequest) async throws -> (Data, URLResponse)
+        transport: @escaping (URLRequest) async throws -> (Data, URLResponse),
     ) throws {
         guard ["http", "https"].contains(baseURL.scheme),
               let host = baseURL.host(), !host.isEmpty,
@@ -59,7 +59,7 @@ struct BackendClient {
         path: String,
         method: String = "GET",
         body: Data? = nil,
-        accessToken: String? = nil
+        accessToken: String? = nil,
     ) async throws -> Data {
         var request = URLRequest(url: baseURL.appending(path: path))
         request.httpMethod = method
@@ -76,7 +76,7 @@ struct BackendClient {
         guard let response = response as? HTTPURLResponse else {
             throw BackendError.invalidResponse
         }
-        guard (200..<300).contains(response.statusCode) else {
+        guard (200 ..< 300).contains(response.statusCode) else {
             throw BackendError.httpStatus(response.statusCode, data)
         }
         return data
