@@ -1,6 +1,15 @@
 {
-  "originHash" : "f28ffdfab124d05e5e89ed710296fb22da8c15a88fb072483d1ab806ebdc9449",
+  "originHash" : "62052afd28ad6bfd0985e4f3440c0903cfde7e9621d5d692be39b2b64293cda6",
   "pins" : [
+    {
+      "identity" : "fakery",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/vadymmarkov/Fakery.git",
+      "state" : {
+        "revision" : "71cb3bf36a808534659d1248780c2bf3c4c4fc91",
+        "version" : "5.1.0"
+      }
+    },
     {
       "identity" : "supabase-swift",
       "kind" : "remoteSourceControl",

@@ -1,3 +1,4 @@
+import Fakery
 import Foundation
 @testable import Orbit
 import Testing
@@ -7,34 +8,37 @@ import Testing
 struct BackendClientTests {
     /// Verifies JSON and authorization reach the intended backend path.
     @Test func sendsJSONWithBearerToken() async throws {
-        let url = try #require(URL(string: "https://example.com/backend"))
-        let body = Data(#"{"message":"Hello"}"#.utf8)
+        let faker = Faker()
+        let url = try #require(URL(string: "https://\(faker.internet.domainName())/backend"))
+        let path = "api/v1/\(faker.lorem.word())"
+        let accessToken = faker.internet.password()
+        let body = try JSONEncoder().encode(["message": faker.lorem.sentence()])
         let client = try BackendClient(baseURL: url) { request in
-            #expect(request.url?.absoluteString == "https://example.com/backend/api/v1/example")
+            #expect(request.url?.absoluteString == "\(url.absoluteString)/\(path)")
             #expect(request.httpMethod == "POST")
             #expect(request.httpBody == body)
             #expect(request.value(forHTTPHeaderField: "Content-Type") == "application/json")
             #expect(request.value(forHTTPHeaderField: "Accept") == "application/json")
-            #expect(request.value(forHTTPHeaderField: "Authorization") == "Bearer test-token")
+            #expect(request.value(forHTTPHeaderField: "Authorization") == "Bearer \(accessToken)")
             let response = try #require(HTTPURLResponse(url: url, statusCode: 201, httpVersion: nil, headerFields: nil))
             return (body, response)
         }
         let result = try await client.request(
-            path: "api/v1/example", method: "POST", body: body, accessToken: "test-token"
+            path: path, method: "POST", body: body, accessToken: accessToken
         )
         #expect(result == body)
     }
 
     /// Verifies failed HTTP responses retain their status and validation details.
     @Test func preservesHTTPFailure() async throws {
-        let url = try #require(URL(string: "https://example.com"))
-        let body = Data(#"{"detail":"Invalid input"}"#.utf8)
+        let url = try #require(URL(string: "https://\(Faker().internet.domainName())"))
+        let body = try JSONEncoder().encode(["detail": Faker().lorem.sentence()])
         let client = try BackendClient(baseURL: url) { _ in
             let response = try #require(HTTPURLResponse(url: url, statusCode: 422, httpVersion: nil, headerFields: nil))
             return (body, response)
         }
         await #expect(throws: BackendError.httpStatus(422, body)) {
-            try await client.request(path: "api/v1/example")
+            try await client.request(path: Faker().lorem.word())
         }
     }
 
@@ -55,14 +59,14 @@ struct BackendClientTests {
 
     /// Verifies empty successful responses work for DELETE and other no-content endpoints.
     @Test func acceptsNoContent() async throws {
-        let url = try #require(URL(string: "https://example.com"))
+        let url = try #require(URL(string: "https://\(Faker().internet.domainName())"))
         let client = try BackendClient(baseURL: url) { request in
             #expect(request.value(forHTTPHeaderField: "Authorization") == nil)
             #expect(request.value(forHTTPHeaderField: "Content-Type") == nil)
             let response = try #require(HTTPURLResponse(url: url, statusCode: 204, httpVersion: nil, headerFields: nil))
             return (Data(), response)
         }
-        let result = try await client.request(path: "example", method: "DELETE")
+        let result = try await client.request(path: Faker().lorem.word(), method: "DELETE")
         #expect(result.isEmpty)
     }
 
@@ -72,12 +76,12 @@ struct BackendClientTests {
     ///   - code: URL loading error that the transport should propagate.
     @Test(arguments: [URLError.Code.cancelled, .notConnectedToInternet, .timedOut])
     func propagatesTransportErrors(code: URLError.Code) async throws {
-        let url = try #require(URL(string: "https://example.com"))
+        let url = try #require(URL(string: "https://\(Faker().internet.domainName())"))
         let client = try BackendClient(baseURL: url) { _ in
             throw URLError(code)
         }
         await #expect(throws: URLError(code)) {
-            try await client.request(path: "health")
+            try await client.request(path: Faker().lorem.word())
         }
     }
 }

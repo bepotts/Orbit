@@ -1,3 +1,4 @@
+import Fakery
 import Foundation
 @testable import Orbit
 import Testing
@@ -7,7 +8,7 @@ import Testing
 struct BackendHealthCheckTests {
     /// Verifies both network and HTTP failures retry, then stop on success.
     @Test func retriesUntilOnline() async throws {
-        let url = try #require(URL(string: "https://example.com"))
+        let url = try #require(URL(string: "https://\(Faker().internet.domainName())"))
         var attempts = 0
         var delays = 0
         let client = try BackendClient(baseURL: url) { request in
@@ -29,7 +30,7 @@ struct BackendHealthCheckTests {
 
     /// Verifies cancellation during the retry delay stops further requests.
     @Test func stopsWhenDelayIsCancelled() async throws {
-        let url = try #require(URL(string: "https://example.com"))
+        let url = try #require(URL(string: "https://\(Faker().internet.domainName())"))
         var attempts = 0
         let client = try BackendClient(baseURL: url) { _ in
             attempts += 1
