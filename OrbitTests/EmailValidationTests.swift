@@ -58,17 +58,17 @@ struct EmailValidationTests {
 
     /// Checks invalid email cannot bypass validation through direct submission.
     @Test func `blocks invalid email requests`() async {
-        let login = LoginModel(makeClient: {
+        let login = LoginModel {
             Issue.record("Invalid email must not reach the backend.")
             throw BackendError.invalidBaseURL
-        })
+        }
         login.email = "invalid"
         login.password = "password"
         #expect(await login.signIn() == false)
-        let signUp = SignUpModel(makeClient: {
+        let signUp = SignUpModel {
             Issue.record("Invalid email must not reach the backend.")
             throw BackendError.invalidBaseURL
-        })
+        }
         signUp.firstName = "Jane"
         signUp.lastName = "Doe"
         signUp.email = "invalid"

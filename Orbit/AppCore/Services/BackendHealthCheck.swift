@@ -1,5 +1,5 @@
 import Foundation
-import OSLog
+import os
 
 /// Checks backend availability at startup until the server responds successfully.
 @MainActor
@@ -17,10 +17,15 @@ struct BackendHealthCheck {
                 Logger.services.info("Backend is online.")
                 return
             } catch {
-                guard !Task.isCancelled, !(error is CancellationError) else { return }
+                guard !Task.isCancelled, !(error is CancellationError) else {
+                    return
+                }
                 Logger.services
                     .error(
-                        "Backend is unavailable: \(error.localizedDescription, privacy: .public). Retrying in five seconds.",
+                        """
+                        Backend is unavailable: \(error.localizedDescription, privacy: .public). \
+                        Retrying in five seconds.
+                        """,
                     )
             }
 

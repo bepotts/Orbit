@@ -35,44 +35,7 @@ struct SignUpView: View {
                         Button("Back to Sign In") { dismiss() }
                     }
                 } else {
-                    Section("Your name") {
-                        TextField("First name", text: $model.firstName)
-                            .textContentType(.givenName)
-                            .accessibilityIdentifier("signUpFirstNameField")
-                        TextField("Last name", text: $model.lastName)
-                            .textContentType(.familyName)
-                            .accessibilityIdentifier("signUpLastNameField")
-                    }
-                    .disabled(model.isSubmitting)
-                    Section("Account details") {
-                        TextField("Email", text: $model.email)
-                            .textContentType(.emailAddress)
-                            .autocorrectionDisabled()
-                        #if os(iOS)
-                            .keyboardType(.emailAddress)
-                            .textInputAutocapitalization(.never)
-                        #endif
-                            .accessibilityIdentifier("signUpEmailField")
-                        if let message = model.emailValidationMessage {
-                            Text(message)
-                                .font(.footnote)
-                                .foregroundStyle(.red)
-                                .accessibilityIdentifier("emailValidationMessage")
-                        }
-                        SecureField("Password", text: $model.password)
-                            .textContentType(.newPassword)
-                            .accessibilityIdentifier("signUpPasswordField")
-                        SecureField("Confirm password", text: $model.passwordConfirmation)
-                            .textContentType(.newPassword)
-                            .accessibilityIdentifier("signUpConfirmPasswordField")
-                        if !model.passwordConfirmation.isEmpty,
-                           model.password != model.passwordConfirmation
-                        {
-                            Text("Passwords do not match.")
-                                .foregroundStyle(.red)
-                        }
-                    }
-                    .disabled(model.isSubmitting)
+                    SignUpFields(model: model)
                     Section {
                         if let message = model.errorMessage {
                             Text(message)
@@ -97,17 +60,24 @@ struct SignUpView: View {
             }
             .interactiveDismissDisabled(model.isSubmitting)
             .task(id: requestsSignUp) {
-                guard requestsSignUp else { return }
-                await model.signUp()
-                requestsSignUp = false
-                if model.loginModel.session != nil, !Task.isCancelled {
-                    dismiss()
-                    onSignedIn()
-                }
+                await submitRegistration()
             }
         }
         #if os(macOS)
         .frame(minWidth: 360, minHeight: 520)
         #endif
+    }
+
+    /// Submits registration and continues after successful authentication.
+    private func submitRegistration() async {
+        guard requestsSignUp else {
+            return
+        }
+        await model.signUp()
+        requestsSignUp = false
+        if model.loginModel.session != nil, !Task.isCancelled {
+            dismiss()
+            onSignedIn()
+        }
     }
 }

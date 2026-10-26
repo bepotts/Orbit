@@ -13,7 +13,10 @@ enum EmailValidation {
               let separator = address.firstIndex(of: "@"),
               address[..<separator].count <= 64 else { return false }
         return address.range(
-            of: #"\A[\p{L}\p{N}!#$%&'*+/=?^_`{|}~-]+(?:\.[\p{L}\p{N}!#$%&'*+/=?^_`{|}~-]+)*@(?:[\p{L}\p{N}](?:[\p{L}\p{N}-]{0,61}[\p{L}\p{N}])?\.)+[\p{L}](?:[\p{L}\p{N}-]{0,61}[\p{L}\p{N}])?\z"#,
+            of: #"\A[\p{L}\p{N}!#$%&'*+/=?^_`{|}~-]+(?:\.[\p{L}\p{N}!#$%&'*+/=?^_`{|}~-]+)*@"#
+                +
+                #"(?:[\p{L}\p{N}](?:[\p{L}\p{N}-]{0,61}[\p{L}\p{N}])?\.)+"#
+                + #"[\p{L}](?:[\p{L}\p{N}-]{0,61}[\p{L}\p{N}])?\z"#,
             options: .regularExpression,
         ) != nil
     }

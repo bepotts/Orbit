@@ -3,7 +3,7 @@
 //  OrbitUITests
 //
 
-import XCTest
+import XCUIAutomation
 
 /// Shared helpers for launching Orbit in platform UI tests.
 enum UITestApp {

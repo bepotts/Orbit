@@ -21,7 +21,8 @@ struct SignUpModelTests {
                 ))
                 return (
                     Data(
-                        #"{"access_token":"access","refresh_token":"refresh","token_type":"bearer","expires_in":3600,"expires_at":null,"user_id":"user"}"#
+                        (#"{"access_token":"access","refresh_token":"refresh","token_type":"bearer""#
+                            + #","expires_in":3600,"expires_at":null,"user_id":"user"}"#)
                             .utf8,
                     ),
                     response,
@@ -147,7 +148,7 @@ struct SignUpModelTests {
     ///   - client: Test transport used by the form.
     /// - Returns: Registration state with matching passwords and padded profile fields.
     private func populatedModel(client: BackendClient) -> SignUpModel {
-        let model = SignUpModel(makeClient: { client })
+        let model = SignUpModel { client }
         model.firstName = " Jane "
         model.lastName = " Doe "
         model.email = " jane@example.com "

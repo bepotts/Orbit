@@ -30,13 +30,14 @@ struct LogoutTests {
             let response = try #require(HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil))
             return (
                 Data(
-                    #"{"access_token":"access","refresh_token":"refresh","token_type":"bearer","expires_in":3600,"expires_at":null,"user_id":"user"}"#
+                    (#"{"access_token":"access","refresh_token":"refresh","token_type":"bearer""#
+                        + #","expires_in":3600,"expires_at":null,"user_id":"user"}"#)
                         .utf8,
                 ),
                 response,
             )
         }
-        let model = LoginModel(makeClient: { client })
+        let model = LoginModel { client }
         model.email = "user@example.com"
         model.password = "password"
         #expect(await model.signIn())
@@ -60,13 +61,14 @@ struct LogoutTests {
             let response = try #require(HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil))
             return (
                 Data(
-                    #"{"access_token":"access","refresh_token":"refresh","token_type":"bearer","expires_in":3600,"expires_at":null,"user_id":"user"}"#
+                    (#"{"access_token":"access","refresh_token":"refresh","token_type":"bearer""#
+                        + #","expires_in":3600,"expires_at":null,"user_id":"user"}"#)
                         .utf8,
                 ),
                 response,
             )
         }
-        let model = LoginModel(makeClient: { client })
+        let model = LoginModel { client }
         model.email = "user@example.com"
         model.password = "password"
         #expect(await model.signIn())
@@ -78,10 +80,10 @@ struct LogoutTests {
 
     /// Guest navigation clears entered credentials without making a backend request.
     @Test func `guest logout`() async {
-        let model = LoginModel(makeClient: {
+        let model = LoginModel {
             Issue.record("Guest logout must not contact the backend.")
             throw BackendError.invalidBaseURL
-        })
+        }
         model.email = "user@example.com"
         model.password = "password"
         await model.signOut()

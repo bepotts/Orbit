@@ -53,7 +53,9 @@ struct AppRootView: View {
             }
         }
         .task(id: requestsSignOut) {
-            guard requestsSignOut else { return }
+            guard requestsSignOut else {
+                return
+            }
             showsTimer = false
             await loginModel.signOut()
             requestsSignOut = false

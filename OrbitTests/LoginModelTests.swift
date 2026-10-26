@@ -17,13 +17,14 @@ struct LoginModelTests {
             let response = try #require(HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil))
             return (
                 Data(
-                    #"{"access_token":"access","refresh_token":"refresh","token_type":"bearer","expires_in":3600,"expires_at":null,"user_id":"user"}"#
+                    (#"{"access_token":"access","refresh_token":"refresh","token_type":"bearer""#
+                        + #","expires_in":3600,"expires_at":null,"user_id":"user"}"#)
                         .utf8,
                 ),
                 response,
             )
         }
-        let model = LoginModel(makeClient: { client })
+        let model = LoginModel { client }
         model.email = " person@example.com "
         model.password = " secret "
         let success = await model.signIn()
@@ -51,7 +52,7 @@ struct LoginModelTests {
             ))
             return (Data(), response)
         }
-        let model = LoginModel(makeClient: { client })
+        let model = LoginModel { client }
         model.email = "person@example.com"
         model.password = "wrong"
         #expect(await model.signIn() == false)
@@ -70,7 +71,7 @@ struct LoginModelTests {
             let response = try #require(HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: nil))
             return (Data("{}".utf8), response)
         }
-        let model = LoginModel(makeClient: { client })
+        let model = LoginModel { client }
         model.email = "person@example.com"
         model.password = "password"
         #expect(await model.signIn() == false)
@@ -80,10 +81,10 @@ struct LoginModelTests {
 
     /// Checks empty credentials are rejected without constructing a request.
     @Test func `empty credentials`() async {
-        let model = LoginModel(makeClient: {
+        let model = LoginModel {
             Issue.record("Empty credentials must not reach the backend.")
             throw BackendError.invalidBaseURL
-        })
+        }
         #expect(await model.signIn() == false)
         #expect(model.errorMessage == "Enter your email and password.")
     }
@@ -96,7 +97,7 @@ struct LoginModelTests {
     func `transport failure`(code: URLError.Code) async throws {
         let url = try #require(URL(string: "https://example.com"))
         let client = try BackendClient(baseURL: url) { _ in throw URLError(code) }
-        let model = LoginModel(makeClient: { client })
+        let model = LoginModel { client }
         model.email = "person@example.com"
         model.password = "password"
         #expect(await model.signIn() == false)

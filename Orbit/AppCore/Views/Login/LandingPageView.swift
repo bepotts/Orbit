@@ -11,7 +11,8 @@ struct LandingPageView: View {
                 .accessibilityHidden(true)
 
             Text("Orbit")
-                .font(.largeTitle).bold()
+                .font(.largeTitle)
+                .bold()
                 .accessibilityAddTraits(.isHeader)
 
             Text("Make time for what matters.")

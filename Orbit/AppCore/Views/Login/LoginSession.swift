@@ -1,5 +1,3 @@
-import Foundation
-
 /// Credentials returned by the backend, retained only for the current app session.
 struct LoginSession: Decodable {
     /// Bearer credential for authenticated backend requests.

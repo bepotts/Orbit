@@ -42,7 +42,9 @@ final class LoginModel {
     ///
     /// - Returns: Whether authentication succeeded.
     func signIn() async -> Bool {
-        guard !isSigningIn, !isSigningOut else { return false }
+        guard !isSigningIn, !isSigningOut else {
+            return false
+        }
         errorMessage = nil
         let email = email.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !email.isEmpty, !password.isEmpty else {
@@ -76,12 +78,7 @@ final class LoginModel {
         } catch let error as URLError where error.code == .cancelled {
             return false
         } catch let BackendError.httpStatus(status, _) {
-            switch status {
-            case 401: errorMessage = "Incorrect email or password. Please try again."
-            case 422: errorMessage = "Enter a valid email address and password."
-            case 429: errorMessage = "Too many sign-in attempts. Please try again later."
-            default: errorMessage = "Sign-in is temporarily unavailable. Please try again."
-            }
+            setErrorMessage(forHTTPStatus: status)
         } catch is URLError {
             errorMessage = "Unable to connect. Check your internet connection and try again."
         } catch {
@@ -94,13 +91,17 @@ final class LoginModel {
     ///
     /// Local logout completes even when the backend is unreachable or the token has expired.
     func signOut() async {
-        guard !isSigningOut, !isSigningIn else { return }
+        guard !isSigningOut, !isSigningIn else {
+            return
+        }
         let accessToken = session?.accessToken
         session = nil
         email = ""
         password = ""
         errorMessage = nil
-        guard let accessToken else { return }
+        guard let accessToken else {
+            return
+        }
         isSigningOut = true
         defer { isSigningOut = false }
         do {
@@ -115,6 +116,23 @@ final class LoginModel {
             return
         } catch {
             errorMessage = "You are signed out on this device. We could not end the server session."
+        }
+    }
+
+    /// Sets the user-facing message for an authentication HTTP failure.
+    ///
+    /// - Parameters:
+    ///   - status: HTTP status returned by the backend.
+    private func setErrorMessage(forHTTPStatus status: Int) {
+        switch status {
+        case 401:
+            errorMessage = "Incorrect email or password. Please try again."
+        case 422:
+            errorMessage = "Enter a valid email address and password."
+        case 429:
+            errorMessage = "Too many sign-in attempts. Please try again later."
+        default:
+            errorMessage = "Sign-in is temporarily unavailable. Please try again."
         }
     }
 }

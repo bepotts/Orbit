@@ -5,7 +5,7 @@
 //  Created by Brandon Potts on 8/16/26.
 //
 
-import OSLog
+import os
 import SwiftUI
 
 /// Main entry point for the Orbit app.

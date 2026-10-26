@@ -19,12 +19,14 @@ struct BackendHealthCheckTests {
                 throw URLError(.cannotConnectToHost)
             }
             let response = try #require(HTTPURLResponse(
-                url: url, statusCode: attempts == 2 ? 503 : 200,
-                httpVersion: nil, headerFields: nil,
+                url: url,
+                statusCode: attempts == 2 ? 503 : 200,
+                httpVersion: nil,
+                headerFields: nil,
             ))
             return (Data(), response)
         }
-        let check = BackendHealthCheck(client: client, retryDelay: { delays += 1 })
+        let check = BackendHealthCheck(client: client) { delays += 1 }
         await check.waitUntilOnline()
         #expect(attempts == 3)
         #expect(delays == 2)
@@ -38,7 +40,7 @@ struct BackendHealthCheckTests {
             attempts += 1
             throw URLError(.cannotConnectToHost)
         }
-        let check = BackendHealthCheck(client: client, retryDelay: { throw CancellationError() })
+        let check = BackendHealthCheck(client: client) { throw CancellationError() }
         await check.waitUntilOnline()
         #expect(attempts == 1)
     }
