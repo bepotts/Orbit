@@ -1,0 +1,125 @@
+name: App CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: app-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  style:
+    name: Formatting and lint
+    runs-on: macos-26
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Ensure style tools are installed
+        run: |
+          command -v swiftlint >/dev/null || brew install swiftlint
+          bash scripts/swiftformat.sh --version
+          swiftlint version
+      - name: Check formatting
+        run: make format-check
+      - name: Lint (warnings fail CI)
+        run: make lint
+
+  test:
+    name: Test (${{ matrix.platform }})
+    runs-on: macos-26
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [iOS, macOS]
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Select Xcode
+        run: |
+          if [[ "${ACT:-}" == "true" ]]; then
+            developer_dir=$(xcode-select -p)
+          else
+            developer_dir=/Applications/Xcode_26.6.app/Contents/Developer
+          fi
+          if [[ ! -x "$developer_dir/usr/bin/xcodebuild" ]]; then
+            echo "::error::Select a full Xcode installation with xcode-select. Missing Xcode at $developer_dir"
+            exit 1
+          fi
+          echo "DEVELOPER_DIR=$developer_dir" >> "$GITHUB_ENV"
+          DEVELOPER_DIR="$developer_dir" xcodebuild -version
+      - name: Prepare CI configuration
+        run: |
+          if [[ "${ACT:-}" != "true" || ! -f Config/development.xcconfig ]]; then
+            cp Config/development.example.xcconfig Config/development.xcconfig
+          fi
+      - name: Select test destination
+        env:
+          PLATFORM: ${{ matrix.platform }}
+        run: |
+          set -o pipefail
+          if [[ "$PLATFORM" == "macOS" ]]; then
+            echo 'TEST_DESTINATION=platform=macOS' >> "$GITHUB_ENV"
+          else
+            device_id=$(xcrun simctl list devices available --json | python3 -c '
+          import json, sys
+          devices = json.load(sys.stdin)["devices"]
+          import re
+          iphones = [d for runtime, items in devices.items()
+                     if (match := re.search(r"iOS-(\d+)-", runtime)) and int(match[1]) >= 26
+                     for d in items if d["name"].startswith("iPhone")]
+          if not iphones:
+              sys.exit("No available iPhone simulator with iOS 26 or later. Install a runtime in Xcode Settings > Components.")
+          print(iphones[0]["udid"])
+          ')
+            echo "TEST_DESTINATION=platform=iOS Simulator,id=$device_id" >> "$GITHUB_ENV"
+          fi
+      - name: Ensure SwiftLint is installed
+        run: command -v swiftlint >/dev/null || brew install swiftlint
+      - name: Build and run Xcode static analysis
+        run: |
+          set -o pipefail
+          mkdir -p TestReports
+          xcodebuild clean build analyze \
+            -project Orbit.xcodeproj \
+            -scheme Orbit \
+            -configuration Debug \
+            -destination "$TEST_DESTINATION" \
+            CODE_SIGNING_ALLOWED=NO \
+            | tee TestReports/analysis-build.log
+      - name: Run SwiftLint analyzer (warnings fail CI)
+        # SourceKit unused_import analysis resolves platform conditionals on the host.
+        if: matrix.platform == 'macOS'
+        run: |
+          swiftlint analyze --strict --config .swiftlint.yml \
+            --compiler-log-path TestReports/analysis-build.log
+      - name: Build and test
+        run: |
+          set -o pipefail
+          mkdir -p TestReports
+          result_dir=$(mktemp -d TestReports/run.XXXXXX)
+          xcodebuild test \
+            -project Orbit.xcodeproj \
+            -scheme Orbit \
+            -configuration Debug \
+            -destination "$TEST_DESTINATION" \
+            -resultBundlePath "$result_dir/Orbit.xcresult" \
+            -only-testing:OrbitTests \
+            CODE_SIGNING_ALLOWED=NO \
+            | tee TestReports/xcodebuild.log
+      - name: Upload test results
+        if: ${{ always() && !env.ACT }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: test-results-${{ matrix.platform }}
+          path: TestReports/
+          retention-days: 14
+          if-no-files-found: ignore

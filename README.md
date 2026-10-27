@@ -60,3 +60,61 @@ Use swiftui-pro to review the timer views for accessibility and data flow.
 Agents should read the relevant `SKILL.md` and load the supporting references needed for the task. Use these skills alongside [AGENTS.md](AGENTS.md), which documents the repository's architecture, coding conventions, and testing expectations.
 
 The bundled skills are authored by Paul Hudson and distributed under the MIT license. [skills-lock.json](skills-lock.json) records their upstream GitHub sources, skill paths, and content hashes; consult it when tracking the installed skill sources or reviewing updates.
+
+## Continuous integration
+
+[App CI](.github/workflows/ci.yml) runs on pushes, pull requests, and manual
+workflow dispatches. It builds and runs unit tests on iOS 26 Simulator and macOS
+using Xcode 26.6 on `macos-26`. The shared Orbit scheme is checked in so fresh
+clones can run tests. Each platform uploads its build log and `.xcresult` bundle
+for 14 days, including when tests fail. UI tests remain available locally.
+
+CI copies the example configuration using placeholder credentials; no GitHub
+secrets or signing certificates are required. These checks do not deploy the app.
+
+### Run GitHub Actions locally
+
+Install [act](https://nektosact.com/installation/) to use the `make act*`
+commands (`brew install act` on macOS). Run these from this repository:
+
+```sh
+make act              # Run all CI jobs for a push
+make act-pr           # Run all CI jobs for a pull request
+make act-list         # List workflow jobs
+make act-dryrun       # Preview execution without running job steps
+make act-style        # Formatting and lint
+make act-test         # Unit tests and analysis for iOS and macOS
+make act-test-ios     # iOS only
+make act-test-macos   # macOS only
+```
+
+The `macos-26` runner maps to your Mac using `-self-hosted`; these jobs run
+directly on the host and can install Homebrew tools. Install Xcode and an iPhone
+simulator with iOS 26 or later first. Local runs use the Xcode installation
+selected by `xcode-select -p`; GitHub uses the pinned Xcode 26.6 installation.
+The example configuration is copied only when the local configuration is missing
+in act’s execution workspace.
+Docker is not required for these native host jobs.
+
+Pass additional options with `ACT_FLAGS`, for example:
+
+```sh
+make act-style ACT_FLAGS="--verbose"
+```
+
+`ACT` overrides the executable. Artifact uploads run only on GitHub; local
+results remain in `TestReports/`. The helpers configure an artifact server at
+`/tmp/Orbit-act-artifacts` (`ACT_ARTIFACT_DIR`) for compatible artifact steps.
+The commands use `--env-file /dev/null` so act does not automatically load the
+application's `.env`. Supply an explicit env file through `ACT_FLAGS` if needed.
+Local runs use your working tree; GitHub-hosted CI remains the final check for
+runner and action compatibility.
+
+### Formatter version
+
+`make format`, `make format-check`, local `act`, and GitHub Actions use
+SwiftFormat 0.64.0 through `scripts/swiftformat.sh`. The script downloads the
+pinned macOS release on first use, verifies its SHA-256 checksum, and caches it
+in the ignored `.build/tools/` directory. Your Homebrew installation is not used
+by these commands. Updating the formatter requires changing the version and
+checksum together in the script. The first run requires internet access.

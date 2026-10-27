@@ -145,10 +145,7 @@ struct TimerDialView: View {
             .accessibilityIdentifier("timerDigit\(index)Field")
             .onSubmit { advanceFocus(from: index) }
             .onKeyPress { press in
-                guard let typed = press.characters.last else {
-                    return .ignored
-                }
-                guard typed.isASCII, typed.isNumber else {
+                guard let typed = press.characters.last, typed.isASCII, typed.isNumber else {
                     return .ignored
                 }
                 setDigitFromKeystroke(typed, at: index)
