@@ -89,10 +89,11 @@ make act-test-macos   # macOS only
 ```
 
 The `macos-26` runner maps to your Mac using `-self-hosted`; these jobs run
-directly on the host and can install Homebrew tools. Install Xcode and an iOS 26
-simulator first. The workflow currently expects Xcode at
-`/Applications/Xcode_26.6.app/Contents/Developer`. It also copies the example
-configuration over `Config/development.xcconfig` in act's execution workspace.
+directly on the host and can install Homebrew tools. Install Xcode and an iPhone
+simulator with iOS 26 or later first. Local runs use the Xcode installation
+selected by `xcode-select -p`; GitHub uses the pinned Xcode 26.6 installation.
+The example configuration is copied only when the local configuration is missing
+in act’s execution workspace.
 Docker is not required for these native host jobs.
 
 Pass additional options with `ACT_FLAGS`, for example:
@@ -101,8 +102,9 @@ Pass additional options with `ACT_FLAGS`, for example:
 make act-style ACT_FLAGS="--verbose"
 ```
 
-`ACT` overrides the executable. Uploaded workflow artifacts are saved under
-`/tmp/Orbit-act-artifacts`; override this with `ACT_ARTIFACT_DIR`.
+`ACT` overrides the executable. Artifact uploads run only on GitHub; local
+results remain in `TestReports/`. The helpers configure an artifact server at
+`/tmp/Orbit-act-artifacts` (`ACT_ARTIFACT_DIR`) for compatible artifact steps.
 The commands use `--env-file /dev/null` so act does not automatically load the
 application's `.env`. Supply an explicit env file through `ACT_FLAGS` if needed.
 Local runs use your working tree; GitHub-hosted CI remains the final check for
