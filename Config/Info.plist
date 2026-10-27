@@ -2,6 +2,15 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <key>BACKEND_BASE_URL</key>
+    <string>$(BACKEND_BASE_URL)</string>
+    <key>NSAppTransportSecurity</key>
+    <dict>
+        <key>NSAllowsLocalNetworking</key>
+        <true/>
+    </dict>
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>Orbit connects to your development backend on the local network.</string>
     <key>SUPABASE_PROJECT_URL</key>
     <string>$(SUPABASE_PROJECT_URL)</string>
     <key>SUPABASE_PUBLISHABLE_KEY</key>

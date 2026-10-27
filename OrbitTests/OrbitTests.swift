@@ -5,14 +5,14 @@
 //  Created by Brandon Potts on 8/16/26.
 //
 
-import Testing
 @testable import Orbit
+import Testing
 
 /// Unit tests for shared timer engine behavior.
 @MainActor
 struct OrbitTests {
     /// Verifies the timer engine starts with the expected default duration.
-    @Test func defaultsToThirtyMinutes() {
+    @Test func `defaults to thirty minutes`() {
         // Fresh timer engine used to verify default startup state.
         let engine = TimerEngine()
         #expect(engine.formattedRemaining == "30:00")
@@ -20,7 +20,7 @@ struct OrbitTests {
     }
 
     /// Verifies selecting a preset updates the remaining time while idle.
-    @Test func presetChangesRemainingWhileIdle() {
+    @Test func `preset changes remaining while idle`() {
         // Fresh timer engine used to verify presets update idle remaining time.
         let engine = TimerEngine()
         engine.selectPreset(.minutes(45))
@@ -28,7 +28,7 @@ struct OrbitTests {
     }
 
     /// Verifies selecting a preset has no effect after the timer starts running.
-    @Test func presetIsIgnoredOnceRunning() {
+    @Test func `preset is ignored once running`() {
         // Fresh timer engine used to verify running timers ignore preset changes.
         let engine = TimerEngine()
         engine.start()
@@ -37,7 +37,7 @@ struct OrbitTests {
     }
 
     /// Verifies stopping a timer resets it to the selected duration.
-    @Test func stopResetsToChosenDuration() {
+    @Test func `stop resets to chosen duration`() {
         // Fresh timer engine used to verify stop returns to the selected duration.
         let engine = TimerEngine()
         engine.selectPreset(.minutes(15))
@@ -48,7 +48,7 @@ struct OrbitTests {
     }
 
     /// Verifies starting a timer moves the engine into the running phase.
-    @Test func startTransitionsIdleTimerToRunning() {
+    @Test func `start transitions idle timer to running`() {
         // Fresh timer engine used to verify the primary lifecycle transition.
         let engine = TimerEngine()
         engine.start()
@@ -58,7 +58,7 @@ struct OrbitTests {
     }
 
     /// Verifies pausing a timer preserves remaining time without resetting the selected duration.
-    @Test func pauseTransitionsRunningTimerToPaused() {
+    @Test func `pause transitions running timer to paused`() {
         // Fresh timer engine used to verify pausing keeps the current session intact.
         let engine = TimerEngine(duration: .minutes(15))
         engine.start()
@@ -70,7 +70,7 @@ struct OrbitTests {
     }
 
     /// Verifies pausing an idle timer has no effect.
-    @Test func pauseIsIgnoredWhileIdle() {
+    @Test func `pause is ignored while idle`() {
         // Fresh timer engine used to verify invalid pause requests are ignored.
         let engine = TimerEngine(duration: .minutes(15))
         engine.pause()
@@ -79,7 +79,7 @@ struct OrbitTests {
     }
 
     /// Verifies manually entered timers can exceed one hour.
-    @Test func manualDurationAllowsTimeAboveSixtyMinutes() {
+    @Test func `manual duration allows time above sixty minutes`() {
         // Fresh timer engine used to verify long manual durations are accepted.
         let engine = TimerEngine()
         engine.setManualDuration(.minutes(90))
@@ -88,7 +88,7 @@ struct OrbitTests {
     }
 
     /// Verifies manually entered timers cannot exceed the four-digit display maximum.
-    @Test func manualDurationCapsAtNinetyNineNinetyNine() {
+    @Test func `manual duration caps at ninety nine ninety nine`() {
         // Fresh timer engine used to verify oversized manual durations are capped.
         let engine = TimerEngine()
         engine.setManualDuration(.minutes(120))
@@ -97,7 +97,7 @@ struct OrbitTests {
     }
 
     /// Verifies manually entered timers cannot go below zero.
-    @Test func manualDurationFloorsAtZero() {
+    @Test func `manual duration floors at zero`() {
         // Fresh timer engine used to verify negative manual durations are clamped.
         let engine = TimerEngine()
         engine.setManualDuration(-10)
@@ -107,7 +107,7 @@ struct OrbitTests {
     }
 
     /// Verifies an externally supplied starting duration is clamped into the supported range.
-    @Test func initializerClampsDuration() {
+    @Test func `initializer clamps duration`() {
         // Timer engine initialized with an oversized duration to verify construction bounds.
         let oversizedEngine = TimerEngine(duration: .minutes(120))
         // Timer engine initialized with a negative duration to verify construction bounds.
@@ -119,7 +119,7 @@ struct OrbitTests {
     }
 
     /// Verifies manual duration changes are ignored while a timer is actively running.
-    @Test func manualDurationIsIgnoredWhileRunning() {
+    @Test func `manual duration is ignored while running`() {
         // Fresh timer engine used to verify active countdowns cannot be overwritten.
         let engine = TimerEngine(duration: .minutes(15))
         engine.start()
@@ -129,7 +129,7 @@ struct OrbitTests {
     }
 
     /// Verifies manual duration changes are allowed while a timer is paused.
-    @Test func manualDurationChangesPausedTimer() {
+    @Test func `manual duration changes paused timer`() {
         // Fresh timer engine used to verify paused sessions can be edited.
         let engine = TimerEngine(duration: .minutes(15))
         engine.start()
@@ -142,7 +142,7 @@ struct OrbitTests {
     }
 
     /// Verifies stopping from a paused timer resets to the edited selected duration.
-    @Test func stopAfterPausedEditResetsToEditedDuration() {
+    @Test func `stop after paused edit resets to edited duration`() {
         // Fresh timer engine used to verify stop honors paused manual edits.
         let engine = TimerEngine(duration: .minutes(15))
         engine.start()
@@ -155,7 +155,7 @@ struct OrbitTests {
     }
 
     /// Verifies progress is zero before a session starts and after a stopped reset.
-    @Test func progressIsZeroForIdleTimer() {
+    @Test func `progress is zero for idle timer`() {
         // Fresh timer engine used to verify idle progress starts empty.
         let engine = TimerEngine(duration: .minutes(15))
         #expect(engine.progress == 0)
@@ -165,7 +165,7 @@ struct OrbitTests {
     }
 
     /// Verifies completed preview timers show finished progress.
-    @Test func completedPreviewShowsFinishedProgress() {
+    @Test func `completed preview shows finished progress`() {
         // Preview timer engine used to verify completed display state.
         let engine = TimerEngine.completedPreview()
         #expect(engine.phase == .complete)
@@ -175,12 +175,12 @@ struct OrbitTests {
     }
 
     /// Verifies the focused session label suggestion pool has the requested number of names.
-    @Test func sessionLabelSuggestionsContainThirtyNames() {
+    @Test func `session label suggestions contain thirty names`() {
         #expect(TimerEngine.sessionLabelSuggestions.count == 30)
     }
 
     /// Verifies a fresh timer engine starts with a suggested session label.
-    @Test func defaultsToSuggestedSessionLabel() {
+    @Test func `defaults to suggested session label`() {
         // Fresh timer engine used to verify startup labels come from the suggestion pool.
         let engine = TimerEngine()
         #expect(TimerEngine.sessionLabelSuggestions.contains(engine.sessionLabel))

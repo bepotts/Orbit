@@ -12,3 +12,7 @@
 // Use /$()/ to prevent xcconfig from treating // as a comment.
 SUPABASE_PROJECT_URL = https:/$()/YOUR_PROJECT.supabase.co
 SUPABASE_PUBLISHABLE_KEY = sb_publishable_YOUR_KEY
+
+// Simulator: localhost reaches the Mac running the backend.
+// Physical device: use your Mac's local hostname, e.g. My-Mac.local.
+BACKEND_BASE_URL = http:/$()/localhost:8000

@@ -1,65 +1,26 @@
 import SwiftUI
 
-/// Email and password entry while authentication is being prepared.
+/// Email and password entry backed by the Orbit authentication API.
 struct LoginView: View {
-    /// Opens the timer without creating an authenticated session.
+    /// Opens the timer after authentication or an explicit guest choice.
     let onContinue: () -> Void
-    /// Email entered for the future authentication flow, held only in memory.
-    @State private var email = ""
-    /// Password entered for the future authentication flow, held only in memory.
-    @State private var password = ""
-    /// Whether the placeholder sign-in explanation is presented.
-    @State private var showsPlaceholder = false
-    /// Keyboard focus for advancing from email to password.
-    @FocusState private var passwordIsFocused: Bool
+    /// Login state owned by the root view so the session survives navigation.
+    @Bindable var model: LoginModel
+    /// Whether the view should run a sign-in request.
+    @State private var requestsSignIn = false
+    /// Whether the registration form is presented.
+    @State private var showsSignUp = false
 
     /// Login form shared by the desktop and mobile apps.
     var body: some View {
         ScrollView {
             VStack {
-                Image(systemName: "flame.fill")
-                    .font(.largeTitle)
-                    .foregroundStyle(EmberColor.gradient)
-                    .accessibilityHidden(true)
+                LoginHeaderView()
 
-                Text("Welcome to Orbit")
-                    .font(.title).bold()
-                    .multilineTextAlignment(.center)
-                    .accessibilityAddTraits(.isHeader)
-
-                Text("Make time for what matters.")
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.bottom)
-
-                VStack(alignment: .leading) {
-                    Text("Email").font(.headline)
-                    TextField("you@example.com", text: $email)
-                        .textContentType(.username)
-                        .autocorrectionDisabled()
-                        #if os(iOS)
-                        .keyboardType(.emailAddress)
-                        .textInputAutocapitalization(.never)
-                        #endif
-                        .submitLabel(.next)
-                        .onSubmit { passwordIsFocused = true }
-                        .accessibilityLabel("Email")
-                        .accessibilityIdentifier("loginEmailField")
-
-                    Text("Password").font(.headline)
-                        .padding(.top)
-                    SecureField("Enter your password", text: $password)
-                        .textContentType(.password)
-                        .focused($passwordIsFocused)
-                        .submitLabel(.go)
-                        .onSubmit { showsPlaceholder = true }
-                        .accessibilityLabel("Password")
-                        .accessibilityIdentifier("loginPasswordField")
-                }
-                .textFieldStyle(.roundedBorder)
+                LoginCredentialFields(model: model, requestsSignIn: $requestsSignIn)
 
                 Button {
-                    showsPlaceholder = true
+                    requestsSignIn = true
                 } label: {
                     Text("Sign In")
                         .frame(maxWidth: .infinity)
@@ -70,31 +31,50 @@ struct LoginView: View {
                 .controlSize(.large)
                 .padding(.top)
                 .accessibilityIdentifier("signInButton")
+                .disabled(model.isSigningIn || model.isSigningOut || !model.isEmailValid)
 
-                Text("Sign-in is coming soon. You can use the timer now.")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
+                if model.isSigningOut {
+                    ProgressView("Signing out…")
+                }
+                if model.isSigningIn {
+                    ProgressView("Signing in…")
+                }
+                if let message = model.errorMessage {
+                    Text(message)
+                        .foregroundStyle(.red)
+                        .accessibilityIdentifier("loginErrorMessage")
+                }
+
+                Button("Sign Up") { showsSignUp = true }
+                    .disabled(model.isSigningIn || model.isSigningOut || requestsSignIn)
+                    .accessibilityIdentifier("signUpButton")
 
                 Button("Continue without signing in", action: onContinue)
                     .buttonStyle(.borderless)
                     .padding(.top)
                     .accessibilityIdentifier("continueWithoutSignInButton")
+                    .disabled(model.isSigningIn || model.isSigningOut)
             }
             .padding()
             .frame(maxWidth: 400)
             .frame(maxWidth: .infinity)
         }
         .defaultScrollAnchor(.center)
-        .alert("Sign-in is coming soon", isPresented: $showsPlaceholder) {
-            Button("OK", role: .cancel) {}
-        } message: {
-            Text("Authentication isn’t connected yet. Your email and password have not been sent or saved.")
+        .sheet(isPresented: $showsSignUp) {
+            SignUpView(loginModel: model, onSignedIn: onContinue)
+        }
+        .task(id: requestsSignIn) {
+            guard requestsSignIn else {
+                return
+            }
+            if await model.signIn() {
+                onContinue()
+            }
+            requestsSignIn = false
         }
     }
-
 }
 
 #Preview {
-    LoginView(onContinue: {})
+    LoginView(onContinue: {}, model: LoginModel())
 }
