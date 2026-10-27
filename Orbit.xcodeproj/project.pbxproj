@@ -48,6 +48,11 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		2922052A3090CA530024065D /* .github */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = .github;
+			sourceTree = "<group>";
+		};
 		29240C9730324EC8001BDBCE /* Orbit */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Orbit;
@@ -112,6 +117,7 @@
 				29240CB130324ECA001BDBCE /* OrbitUITests */,
 				29240C9630324EC8001BDBCE /* Products */,
 				29E71A76303FAD9B00E428D3 /* .gitignore */,
+				2922052A3090CA530024065D /* .github */,
 			);
 			sourceTree = "<group>";
 		};
@@ -141,6 +147,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				2922052A3090CA530024065D /* .github */,
 				29240C9730324EC8001BDBCE /* Orbit */,
 			);
 			name = Orbit;

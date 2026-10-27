@@ -60,3 +60,50 @@ Use swiftui-pro to review the timer views for accessibility and data flow.
 Agents should read the relevant `SKILL.md` and load the supporting references needed for the task. Use these skills alongside [AGENTS.md](AGENTS.md), which documents the repository's architecture, coding conventions, and testing expectations.
 
 The bundled skills are authored by Paul Hudson and distributed under the MIT license. [skills-lock.json](skills-lock.json) records their upstream GitHub sources, skill paths, and content hashes; consult it when tracking the installed skill sources or reviewing updates.
+
+## Continuous integration
+
+[App CI](.github/workflows/ci.yml) runs on pushes, pull requests, and manual
+workflow dispatches. It builds and runs unit tests on iOS 26 Simulator and macOS
+using Xcode 26.6 on `macos-26`. The shared Orbit scheme is checked in so fresh
+clones can run tests. Each platform uploads its build log and `.xcresult` bundle
+for 14 days, including when tests fail. UI tests remain available locally.
+
+CI copies the example configuration using placeholder credentials; no GitHub
+secrets or signing certificates are required. These checks do not deploy the app.
+
+### Run GitHub Actions locally
+
+Install [act](https://nektosact.com/installation/) to use the `make act*`
+commands (`brew install act` on macOS). Run these from this repository:
+
+```sh
+make act              # Run all CI jobs for a push
+make act-pr           # Run all CI jobs for a pull request
+make act-list         # List workflow jobs
+make act-dryrun       # Preview execution without running job steps
+make act-style        # Formatting and lint
+make act-test         # Unit tests and analysis for iOS and macOS
+make act-test-ios     # iOS only
+make act-test-macos   # macOS only
+```
+
+The `macos-26` runner maps to your Mac using `-self-hosted`; these jobs run
+directly on the host and can install Homebrew tools. Install Xcode and an iOS 26
+simulator first. The workflow currently expects Xcode at
+`/Applications/Xcode_26.6.app/Contents/Developer`. It also copies the example
+configuration over `Config/development.xcconfig` in act's execution workspace.
+Docker is not required for these native host jobs.
+
+Pass additional options with `ACT_FLAGS`, for example:
+
+```sh
+make act-style ACT_FLAGS="--verbose"
+```
+
+`ACT` overrides the executable. Uploaded workflow artifacts are saved under
+`/tmp/Orbit-act-artifacts`; override this with `ACT_ARTIFACT_DIR`.
+The commands use `--env-file /dev/null` so act does not automatically load the
+application's `.env`. Supply an explicit env file through `ACT_FLAGS` if needed.
+Local runs use your working tree; GitHub-hosted CI remains the final check for
+runner and action compatibility.
