@@ -23,9 +23,8 @@ jobs:
           persist-credentials: false
       - name: Ensure style tools are installed
         run: |
-          command -v swiftformat >/dev/null || brew install swiftformat
           command -v swiftlint >/dev/null || brew install swiftlint
-          swiftformat --version
+          bash scripts/swiftformat.sh --version
           swiftlint version
       - name: Check formatting
         run: make format-check

@@ -109,3 +109,12 @@ The commands use `--env-file /dev/null` so act does not automatically load the
 application's `.env`. Supply an explicit env file through `ACT_FLAGS` if needed.
 Local runs use your working tree; GitHub-hosted CI remains the final check for
 runner and action compatibility.
+
+### Formatter version
+
+`make format`, `make format-check`, local `act`, and GitHub Actions use
+SwiftFormat 0.64.0 through `scripts/swiftformat.sh`. The script downloads the
+pinned macOS release on first use, verifies its SHA-256 checksum, and caches it
+in the ignored `.build/tools/` directory. Your Homebrew installation is not used
+by these commands. Updating the formatter requires changing the version and
+checksum together in the script. The first run requires internet access.
