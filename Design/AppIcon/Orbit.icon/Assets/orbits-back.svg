@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024"><defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="0.35" y2="1">
+    <stop offset="0" stop-color="#1D2152"/><stop offset="1" stop-color="#070A1E"/>
+  </linearGradient>
+  <radialGradient id="nebula" cx="78%" cy="18%" r="55%">
+    <stop offset="0" stop-color="#6D4BD8" stop-opacity="0.35"/><stop offset="1" stop-color="#6D4BD8" stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+    <stop offset="0" stop-color="#F2A65A" stop-opacity="0.9"/>
+    <stop offset="0.42" stop-color="#C8672B" stop-opacity="0.32"/>
+    <stop offset="1" stop-color="#C8672B" stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="sun" cx="42%" cy="38%" r="65%">
+    <stop offset="0" stop-color="#FFF6E4"/><stop offset="0.35" stop-color="#FFCB80"/>
+    <stop offset="0.75" stop-color="#F2A65A"/><stop offset="1" stop-color="#C8672B"/>
+  </radialGradient>
+  <radialGradient id="p0" cx="35%" cy="32%" r="75%"><stop offset="0" stop-color="#A7F3E4"/><stop offset="1" stop-color="#14B8A6"/></radialGradient><radialGradient id="p1" cx="35%" cy="32%" r="75%"><stop offset="0" stop-color="#FFE7C2"/><stop offset="1" stop-color="#F2A65A"/></radialGradient><radialGradient id="p2" cx="35%" cy="32%" r="75%"><stop offset="0" stop-color="#DDD3FF"/><stop offset="1" stop-color="#7C5CF0"/></radialGradient><radialGradient id="p3" cx="35%" cy="32%" r="75%"><stop offset="0" stop-color="#A7F3E4"/><stop offset="1" stop-color="#14B8A6"/></radialGradient><radialGradient id="p4" cx="35%" cy="32%" r="75%"><stop offset="0" stop-color="#DDD3FF"/><stop offset="1" stop-color="#7C5CF0"/></radialGradient>
+</defs><g transform="translate(512.0 512.0) rotate(-22)"><ellipse rx="235" ry="92" fill="none" stroke="#FFE9CC" stroke-width="9" opacity="0.32"/><ellipse rx="335" ry="132" fill="none" stroke="#FFE9CC" stroke-width="9" opacity="0.32"/><ellipse rx="430" ry="168" fill="none" stroke="#FFE9CC" stroke-width="9" opacity="0.32"/><g transform="translate(177.5 -111.9) rotate(22)"><circle r="38" fill="url(#p1)"/></g><g transform="translate(-338.8 -103.4) rotate(22)"><circle r="46" fill="url(#p2)"/></g></g></svg>
