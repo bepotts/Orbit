@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024"><defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="0.35" y2="1">
+    <stop offset="0" stop-color="#1D2152"/><stop offset="1" stop-color="#070A1E"/>
+  </linearGradient>
+  <radialGradient id="nebula" cx="78%" cy="18%" r="55%">
+    <stop offset="0" stop-color="#6D4BD8" stop-opacity="0.35"/><stop offset="1" stop-color="#6D4BD8" stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+    <stop offset="0" stop-color="#F2A65A" stop-opacity="0.9"/>
+    <stop offset="0.42" stop-color="#C8672B" stop-opacity="0.32"/>
+    <stop offset="1" stop-color="#C8672B" stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="sun" cx="42%" cy="38%" r="65%">
+    <stop offset="0" stop-color="#FFF6E4"/><stop offset="0.35" stop-color="#FFCB80"/>
+    <stop offset="0.75" stop-color="#F2A65A"/><stop offset="1" stop-color="#C8672B"/>
+  </radialGradient>
+  <radialGradient id="p0" cx="35%" cy="32%" r="75%"><stop offset="0" stop-color="#A7F3E4"/><stop offset="1" stop-color="#14B8A6"/></radialGradient><radialGradient id="p1" cx="35%" cy="32%" r="75%"><stop offset="0" stop-color="#FFE7C2"/><stop offset="1" stop-color="#F2A65A"/></radialGradient><radialGradient id="p2" cx="35%" cy="32%" r="75%"><stop offset="0" stop-color="#DDD3FF"/><stop offset="1" stop-color="#7C5CF0"/></radialGradient><radialGradient id="p3" cx="35%" cy="32%" r="75%"><stop offset="0" stop-color="#A7F3E4"/><stop offset="1" stop-color="#14B8A6"/></radialGradient><radialGradient id="p4" cx="35%" cy="32%" r="75%"><stop offset="0" stop-color="#DDD3FF"/><stop offset="1" stop-color="#7C5CF0"/></radialGradient>
+</defs><rect width="1024" height="1024" fill="url(#bg)"/><rect width="1024" height="1024" fill="url(#nebula)"/><g transform="translate(512.0 512.0) rotate(-22)"><ellipse rx="270" ry="106" fill="none" stroke="#FFE9CC" stroke-width="30" opacity="0.32"/><ellipse rx="420" ry="165" fill="none" stroke="#FFE9CC" stroke-width="30" opacity="0.32"/></g><circle cx="512.0" cy="512.0" r="360.0" fill="url(#glow)"/><circle cx="512.0" cy="512.0" r="150" fill="url(#sun)"/><g transform="translate(512.0 512.0) rotate(-22)"><linearGradient id="fade0" gradientUnits="userSpaceOnUse" x1="-270" y1="0" x2="270" y2="0"><stop offset="0" stop-color="#FFE9CC" stop-opacity="0"/><stop offset="0.22" stop-color="#FFE9CC" stop-opacity="0.8"/><stop offset="0.78" stop-color="#FFE9CC" stop-opacity="0.8"/><stop offset="1" stop-color="#FFE9CC" stop-opacity="0"/></linearGradient><path d="M -270 0 A 270 106 0 0 0 270 0" fill="none" stroke="url(#fade0)" stroke-width="30"/><linearGradient id="fade1" gradientUnits="userSpaceOnUse" x1="-420" y1="0" x2="420" y2="0"><stop offset="0" stop-color="#FFE9CC" stop-opacity="0"/><stop offset="0.22" stop-color="#FFE9CC" stop-opacity="0.8"/><stop offset="0.78" stop-color="#FFE9CC" stop-opacity="0.8"/><stop offset="1" stop-color="#FFE9CC" stop-opacity="0"/></linearGradient><path d="M -420 0 A 420 165 0 0 0 420 0" fill="none" stroke="url(#fade1)" stroke-width="30"/><g transform="translate(-233.8 53.0) rotate(22)"><circle r="52" fill="url(#p3)"/></g><g transform="translate(321.7 106.1) rotate(22)"><circle r="64" fill="url(#p4)"/></g></g></svg>
