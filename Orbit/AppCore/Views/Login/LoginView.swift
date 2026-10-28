@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Email and password entry backed by the Orbit authentication API.
 struct LoginView: View {
-    /// Opens the timer after authentication or an explicit guest choice.
+    /// Opens the timer after authentication.
     let onContinue: () -> Void
     /// Login state owned by the root view so the session survives navigation.
     @Bindable var model: LoginModel
@@ -48,12 +48,6 @@ struct LoginView: View {
                 Button("Sign Up") { showsSignUp = true }
                     .disabled(model.isSigningIn || model.isSigningOut || requestsSignIn)
                     .accessibilityIdentifier("signUpButton")
-
-                Button("Continue without signing in", action: onContinue)
-                    .buttonStyle(.borderless)
-                    .padding(.top)
-                    .accessibilityIdentifier("continueWithoutSignInButton")
-                    .disabled(model.isSigningIn || model.isSigningOut)
             }
             .padding()
             .frame(maxWidth: 400)
