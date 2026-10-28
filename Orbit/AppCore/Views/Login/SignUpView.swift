@@ -81,3 +81,7 @@ struct SignUpView: View {
         }
     }
 }
+
+#Preview {
+    SignUpView(loginModel: LoginModel(), onSignedIn: {})
+}

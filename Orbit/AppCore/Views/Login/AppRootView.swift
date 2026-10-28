@@ -73,3 +73,8 @@ struct AppRootView: View {
         }
     }
 }
+
+#Preview {
+    AppRootView()
+        .environment(TimerEngine())
+}

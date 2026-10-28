@@ -47,3 +47,12 @@ struct SignUpFields: View {
         .disabled(model.isSubmitting)
     }
 }
+
+#Preview {
+    @Previewable @State var model = SignUpModel()
+
+    Form {
+        SignUpFields(model: model)
+    }
+    .formStyle(.grouped)
+}

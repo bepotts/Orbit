@@ -21,3 +21,10 @@ struct LoginHeaderView: View {
             .padding(.bottom)
     }
 }
+
+#Preview {
+    VStack {
+        LoginHeaderView()
+    }
+    .padding()
+}

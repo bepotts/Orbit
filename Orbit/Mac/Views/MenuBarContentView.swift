@@ -185,6 +185,12 @@ import SwiftUI
         }
     }
 
+    #Preview("Menu Bar Label") {
+        MenuBarLabel()
+            .environment(TimerEngine())
+            .padding()
+    }
+
     #Preview("Light") {
         MenuBarContentView()
             .environment(TimerEngine())

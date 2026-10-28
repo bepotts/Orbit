@@ -45,3 +45,11 @@ struct LoginCredentialFields: View {
         .disabled(model.isSigningIn || model.isSigningOut)
     }
 }
+
+#Preview {
+    @Previewable @State var model = LoginModel()
+    @Previewable @State var requestsSignIn = false
+
+    LoginCredentialFields(model: model, requestsSignIn: $requestsSignIn)
+        .padding()
+}
